@@ -36,22 +36,28 @@ app = dash.Dash(__name__)
 # App layout
 
 app.layout = html.Div([
+    html.H1("Test", style={'text-align':'center'}),
+    dcc.RadioItems(id = 'radio_buttons', options=[
+        {'label' : 'Temperature', 'value' : 'Temperature'},
+        {'label' : 'Pressure', 'value' : 'Pressure'},
+        {'label' : 'Humidity', 'value' : 'Humidity'}],
+        value = 'Temperature'),
     
-    html.H1("Dupa", style={'text-align':'center'}),
+
     
-    #dcc.Dropdown(id="select_stock", 
-                  #options=[{'label': f'{item}', 'value': f'{item}'} for item in stock_df.sort_values(by=['Name'])['Name']],
-                  #multi=False,
-                  #value='PHARMENA',
-                  #style={'width':'40%'}
-                  #),
     
-    html.Div(id='output_container', children=[]),
     html.Br(),
     
-    dcc.Graph(id='predicted_price', figure=px.scatter(df, x='Time', y='Temperature'))
+    dcc.Graph(id='plant_graph', figure=px.scatter(df, x='Time', y='Temperature'))
 ])
 
+@app.callback(
+    Output('plant_graph', 'figure'),
+    Input('radio_buttons', 'value'))
+def update_figure(column):
+    fig = px.scatter(df, x="Time", y=column)
+
+    return fig
 
 
 if __name__ == '__main__':
